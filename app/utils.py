@@ -72,13 +72,12 @@ def save_uploaded_file(file_storage, subfolder=""):
     os.makedirs(upload_dir, exist_ok=True)
     dest = os.path.join(upload_dir, filename)
     file_storage.save(dest)
-    # Return a URL path usable in templates
-    rel = os.path.relpath(dest, os.path.join(BASE_DIR := os.path.abspath(os.path.join(upload_dir, "..", "..", "..")), "app", "static"))
-    # Simpler: build path relative to static
+    # Build a URL path relative to the static folder so Flask can serve it
+    # at /static/uploads/... (Flask's static route is mounted at /static).
     static_root = os.path.abspath(os.path.join(current_app.root_path, "static"))
     rel_path = os.path.relpath(dest, static_root)
     rel_path = rel_path.replace("\\", "/")
-    return "/" + rel_path
+    return "/static/" + rel_path
 
 
 def delete_uploaded_file(relative_path):
@@ -107,3 +106,44 @@ def slugify(text):
         elif ch == " ":
             out.append("-")
     return "".join(out)
+
+
+def unique_slug(model, base, column="slug", instance_id=None):
+    """Return a slug for `base` that is unique on `model.<column>`.
+
+    If `instance_id` is provided (editing an existing row), a slug equal to the
+    existing row's own slug is allowed (it is not treated as a collision).
+    """
+    from app.extensions import db
+
+    candidate = slugify(base) or "item"
+    if instance_id is None:
+        if not db.session.execute(
+            db.select(model).where(getattr(model, column) == candidate)
+        ).scalar_one_or_none():
+            return candidate
+        n = 2
+        while db.session.execute(
+            db.select(model).where(getattr(model, column) == f"{candidate}-{n}")
+        ).scalar_one_or_none():
+            n += 1
+        return f"{candidate}-{n}"
+
+    # Editing: only reject if the slug belongs to a *different* row.
+    clash = db.session.execute(
+        db.select(model).where(
+            getattr(model, column) == candidate,
+            model.id != instance_id,
+        )
+    ).scalar_one_or_none()
+    if not clash:
+        return candidate
+    n = 2
+    while db.session.execute(
+        db.select(model).where(
+            getattr(model, column) == f"{candidate}-{n}",
+            model.id != instance_id,
+        )
+    ).scalar_one_or_none():
+        n += 1
+    return f"{candidate}-{n}"

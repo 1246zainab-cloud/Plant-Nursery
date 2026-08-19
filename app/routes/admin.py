@@ -13,7 +13,7 @@ from app.models import (
     HomepageSection, FooterContent, SocialLink, Announcement,
 )
 from app.utils import (
-    slugify, allowed_file, save_uploaded_file, delete_uploaded_file, utcnow
+    slugify, unique_slug, allowed_file, save_uploaded_file, delete_uploaded_file, utcnow
 )
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -160,7 +160,7 @@ def plant_new():
                     flash("Invalid image file type.", "error")
             plant = Plant(
                 name=name,
-                slug=slugify(name) or name.lower().replace(" ", "-"),
+                slug=unique_slug(Plant, name),
                 category_id=category_id,
                 description=request.form.get("description", ""),
                 short_description=request.form.get("short_description", ""),
@@ -192,6 +192,7 @@ def plant_edit(plant_id):
     categories = db.session.execute(db.select(Category).order_by(Category.display_order)).scalars().all()
     if request.method == "POST":
         plant.name = request.form.get("name", "").strip()
+        plant.slug = unique_slug(Plant, plant.name, instance_id=plant.id)
         plant.category_id = request.form.get("category_id", type=int)
         plant.price = request.form.get("price", type=float)
         plant.stock = request.form.get("stock", 0, type=int)
@@ -260,7 +261,7 @@ def category_new():
                 if allowed_file(f.filename):
                     image = save_uploaded_file(f, "categories")
             cat = Category(
-                name=name, slug=slugify(name) or name.lower().replace(" ", "-"),
+                name=name, slug=unique_slug(Plant, name),
                 description=request.form.get("description", ""),
                 image=image,
                 is_active=bool(request.form.get("is_active")),

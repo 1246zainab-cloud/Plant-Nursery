@@ -228,16 +228,23 @@ def _seed_initial_data(app):
     """Create default admin and base website settings if they don't exist."""
     from app.models import Admin, WebsiteSetting, NavigationItem, FooterContent, SocialLink, Category
 
-    # Default admin
-    if not db.session.execute(db.select(Admin).limit(1)).scalar_one_or_none():
+    # Default admin (create if missing, and keep password in sync with config
+    # so a changed ADMIN_PASSWORD in .env is always honoured).
+    admin = db.session.execute(db.select(Admin).limit(1)).scalar_one_or_none()
+    configured_pw = app.config.get("ADMIN_PASSWORD", "admin123")
+    if admin is None:
         admin = Admin(
             username=app.config.get("ADMIN_USERNAME", "admin"),
             email=app.config.get("ADMIN_EMAIL", "admin@nursery.com"),
             full_name="System Administrator",
             is_super=True,
         )
-        admin.set_password(app.config.get("ADMIN_PASSWORD", "admin123"))
+        admin.set_password(configured_pw)
         db.session.add(admin)
+        db.session.commit()
+    elif not admin.check_password(configured_pw):
+        # Password in DB is stale/different from configured value — resync it.
+        admin.set_password(configured_pw)
         db.session.commit()
 
     # Default website settings
