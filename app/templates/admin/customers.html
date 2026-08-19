@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Customers{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Customers</h2><span class="sub">View and manage customer accounts</span></div>
+    </div>
+    <form method="get" class="filter-bar">
+        <div class="form-group"><input type="text" name="search" class="form-control" placeholder="Search name, email, username..." value="{{ search }}"></div>
+        <button type="submit" class="btn btn-outline"><i class="fa-solid fa-filter"></i> Search</button>
+    </form>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Joined</th><th>Orders</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for c in customers %}
+                <tr>
+                    <td><strong>{{ c.full_name or c.username }}</strong></td>
+                    <td>{{ c.email }}</td>
+                    <td>{{ c.phone or '—' }}</td>
+                    <td>{{ c.created_at|date }}</td>
+                    <td>{{ c.orders_count }}</td>
+                    <td>{% if c.is_active %}<span class="badge-pill badge-green">Active</span>{% else %}<span class="badge-pill badge-red">Disabled</span>{% endif %}</td>
+                    <td>
+                        <div class="action-cell">
+                            <a href="{{ url_for('admin.customer_detail', customer_id=c.id) }}" class="btn-icon" title="View"><i class="fa-solid fa-eye"></i></a>
+                            <form method="post" action="{{ url_for('admin.customer_toggle', customer_id=c.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-icon" title="Toggle Status" data-confirm="Toggle customer status?"><i class="fa-solid fa-power-off"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No customers found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% for pg in pagination.iter_pages() %}
+            {% if pg %}<a href="{{ url_for('admin.customers', page=pg, search=search) }}" class="{% if pg == pagination.page %}current{% endif %}">{{ pg }}</a>
+            {% else %}<span>…</span>{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-col footer-about">
+            <div class="footer-brand">
+                {% if site.logo %}
+                <img src="{{ site.logo }}" alt="logo" class="footer-logo">
+                {% else %}
+                <i class="fa-solid fa-leaf"></i>
+                {% endif %}
+                <span>{{ site.name }}</span>
+            </div>
+            <p>{{ footer.about_text if footer else site.about_short }}</p>
+            <div class="social-links">
+                {% for link in social_links %}
+                <a href="{{ link.url }}" target="_blank" rel="noopener" title="{{ link.platform }}">
+                    <i class="fa-brands fa-{{ link.platform }}"></i>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                {% for item in footer_nav %}
+                <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if footer and footer.show_categories %}
+        <div class="footer-col">
+            <h4>Categories</h4>
+            <ul>
+                {% for cat in categories %}
+                <li><a href="{{ url_for('main.category_detail', slug=cat.slug) }}">{{ cat.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul class="footer-contact">
+                {% if footer and footer.contact_address %}
+                <li><i class="fa-solid fa-location-dot"></i> {{ footer.contact_address }}</li>
+                {% endif %}
+                {% if footer and footer.contact_phone %}
+                <li><i class="fa-solid fa-phone"></i> {{ footer.contact_phone }}</li>
+                {% endif %}
+                {% if footer and footer.contact_email %}
+                <li><i class="fa-solid fa-envelope"></i> {{ footer.contact_email }}</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>{{ footer.copyright_text if footer else ('© ' ~ site.name) }}</p>
+    </div>
+</footer>

@@ -1,0 +1,101 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{% if plant %}Edit Plant{% else %}Add Plant{% endif %}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width:820px;">
+    <div class="panel-head"><h2>{% if plant %}Edit Plant{% else %}Add New Plant{% endif %}</h2></div>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Plant Name *</label>
+                <input type="text" name="name" class="form-control" required value="{{ plant.name if plant else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Category *</label>
+                <select name="category_id" class="form-control" required>
+                    <option value="">Select Category</option>
+                    {% for c in categories %}<option value="{{ c.id }}" {% if plant and plant.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Price ($) *</label>
+                <input type="number" step="0.01" name="price" class="form-control" required value="{{ plant.price if plant else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Stock</label>
+                <input type="number" name="stock" class="form-control" value="{{ plant.stock if plant else 0 }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Plant Type</label>
+                <input type="text" name="plant_type" class="form-control" placeholder="e.g. Succulent" value="{{ plant.plant_type if plant else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Size</label>
+                <input type="text" name="size" class="form-control" placeholder="e.g. Small / 6 inch" value="{{ plant.size if plant else '' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Short Description</label>
+            <input type="text" name="short_description" class="form-control" value="{{ plant.short_description if plant else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Full Description</label>
+            <textarea name="description" class="form-control">{{ plant.description if plant else '' }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Watering Requirements</label>
+                <input type="text" name="watering_requirements" class="form-control" value="{{ plant.watering_requirements if plant else '' }}">
+            </div>
+            <div class="form-group">
+                <label>Sunlight Requirements</label>
+                <input type="text" name="sunlight_requirements" class="form-control" value="{{ plant.sunlight_requirements if plant else '' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Care Instructions</label>
+            <textarea name="care_instructions" class="form-control">{{ plant.care_instructions if plant else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Plant Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            {% if plant and plant.image %}
+            <div class="current-image"><img src="{{ plant.image }}" alt="current"></div>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group checkbox-inline">
+                <input type="checkbox" name="is_available" id="avail" {% if not plant or plant.is_available %}checked{% endif %}>
+                <label for="avail" style="margin:0;">Available for sale</label>
+            </div>
+            <div class="form-group checkbox-inline">
+                <input type="checkbox" name="is_featured" id="feat" {% if plant and plant.is_featured %}checked{% endif %}>
+                <label for="feat" style="margin:0;">Featured plant</label>
+            </div>
+            <div class="form-group checkbox-inline">
+                <input type="checkbox" name="is_popular" id="pop" {% if plant and plant.is_popular %}checked{% endif %}>
+                <label for="pop" style="margin:0;">Popular plant</label>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Plant</button>
+            <a href="{{ url_for('admin.plants') }}" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Message{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Message from {{ message.name }}</h2><span class="sub">{{ message.created_at|datetime }}</span></div>
+        <a href="{{ url_for('admin.messages') }}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    </div>
+
+    <div class="panel-sub">
+        <table class="info-table">
+            <tr><th>Name</th><td>{{ message.name }}</td></tr>
+            <tr><th>Email</th><td>{{ message.email }}</td></tr>
+            <tr><th>Phone</th><td>{{ message.phone or '—' }}</td></tr>
+            <tr><th>Subject</th><td>{{ message.subject or '—' }}</td></tr>
+        </table>
+    </div>
+
+    <div class="panel-sub">
+        <h3>Message</h3>
+        <div class="message-body">{{ message.message }}</div>
+    </div>
+
+    {% if message.admin_reply %}
+    <div class="panel-sub">
+        <h3>Your Reply</h3>
+        <div class="message-body reply">{{ message.admin_reply }}</div>
+        <span class="sub">Replied {{ message.replied_at|datetime }}</span>
+    </div>
+    {% endif %}
+
+    <div class="panel-sub">
+        <h3>{% if message.admin_reply %}Update Reply{% else %}Reply{% endif %}</h3>
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group" style="grid-column:1/-1;">
+                <textarea name="reply" class="form-control" rows="4" placeholder="Type your reply...">{% if not message.admin_reply %}{% endif %}</textarea>
+            </div>
+            <div class="form-group" style="display:flex;gap:10px;">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Send Reply</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

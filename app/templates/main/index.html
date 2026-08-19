@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+    <div class="container hero-inner">
+        <h1>Grow a Greener, Happier Life with {{ site.name }}</h1>
+        <p>{{ site.tagline }}. Discover a curated collection of healthy plants, expert care tips, and everything you need to bring nature into your home and garden.</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('main.plants') }}" class="btn btn-outline"><i class="fa-solid fa-leaf"></i> Explore Plants</a>
+            <a href="{{ url_for('main.category_detail', slug=categories[0].slug if categories else '') }}" class="btn btn-primary"><i class="fa-solid fa-bag-shopping"></i> Shop Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Announcements -->
+<div class="container" style="margin-top:30px;">
+    {% for ann in announcements %}
+    <div class="announcement-bar">
+        <h4><i class="fa-solid fa-bullhorn"></i> {{ ann.title }}</h4>
+        <p>{{ ann.message }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Featured Plants -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow">Handpicked</span>
+            <h2>Featured Plants</h2>
+            <p>Our most loved plants, selected by our nursery experts just for you.</p>
+        </div>
+        {% if featured %}
+        <div class="plant-grid">
+            {% for plant in featured %}
+            {% include 'main/_plant_card.html' %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="fa-solid fa-seedling"></i><h3>No featured plants yet</h3></div>
+        {% endif %}
+        <div style="text-align:center;margin-top:34px;">
+            <a href="{{ url_for('main.plants') }}" class="btn btn-outline">View All Plants</a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow">Browse</span>
+            <h2>Plant Categories</h2>
+            <p>Find exactly what you're looking for across our diverse plant collections.</p>
+        </div>
+        <div class="cat-grid">
+            {% for cat in categories %}
+            <a href="{{ url_for('main.category_detail', slug=cat.slug) }}" class="cat-card">
+                <div class="cat-icon">
+                    {% if cat.image %}<img src="{{ cat.image }}" alt="{{ cat.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">{% else %}<i class="fa-solid fa-leaf"></i>{% endif %}
+                </div>
+                <h3>{{ cat.name }}</h3>
+                <div class="count">{{ cat.plants.count() }} plants</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Popular Plants -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow">Trending</span>
+            <h2>Popular Right Now</h2>
+            <p>The plants our community can't stop buying.</p>
+        </div>
+        {% if popular %}
+        <div class="plant-grid">
+            {% for plant in popular %}
+            {% include 'main/_plant_card.html' %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- About -->
+<section class="section section-alt">
+    <div class="container about-home">
+        <div class="img">
+            <img src="{{ url_for('static', filename='images/about.svg') }}" alt="Nursery">
+        </div>
+        <div>
+            <span class="eyebrow">About Us</span>
+            <h2>Rooted in Passion, Grown with Care</h2>
+            <p>{{ site.about_short }}</p>
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-check-circle"></i> 100% healthy, nursery-grown plants</li>
+                <li><i class="fa-solid fa-check-circle"></i> Expert care guidance with every order</li>
+                <li><i class="fa-solid fa-check-circle"></i> Safe, fast, and eco-friendly delivery</li>
+                <li><i class="fa-solid fa-check-circle"></i> Friendly support from real plant lovers</li>
+            </ul>
+            <a href="{{ url_for('main.about') }}" class="btn btn-primary" style="margin-top:22px;">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<!-- Dynamic homepage sections -->
+{% for section in sections %}
+<section class="section {% if loop.index % 2 == 0 %}section-alt{% endif %}">
+    <div class="container about-home">
+        {% if section.image %}
+        <div class="img"><img src="{{ section.image }}" alt="{{ section.title }}"></div>
+        {% endif %}
+        <div>
+            <h2>{{ section.title }}</h2>
+            <p>{{ section.description }}</p>
+            {% if section.button_text %}
+            <a href="{{ section.button_link or '#' }}" class="btn btn-primary" style="margin-top:14px;">{{ section.button_text }}</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endfor %}
+
+<!-- Contact CTA -->
+<section class="section">
+    <div class="container" style="text-align:center;">
+        <div class="section-head">
+            <span class="eyebrow">Get in touch</span>
+            <h2>Have Questions? We're Here to Help</h2>
+            <p>Reach out to our team for plant advice, bulk orders, or anything else.</p>
+        </div>
+        <a href="{{ url_for('main.contact') }}" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+    </div>
+</section>
+{% endblock %}

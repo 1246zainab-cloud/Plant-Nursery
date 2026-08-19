@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="margin-top:40px;margin-bottom:60px;">
+    <nav class="breadcrumbs">
+        <a href="{{ url_for('customer.orders') }}">My Orders</a><span>/</span>
+        {{ order.order_number }}
+    </nav>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:30px;align-items:start;">
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+                <h1 style="color:var(--green);">{{ order.order_number }}</h1>
+                <span class="status-badge status-{{ order.status.lower() }}">{{ order.status }}</span>
+            </div>
+
+            <div class="order-items">
+                {% for item in order.items %}
+                <div class="order-item">
+                    <div style="flex:1;">
+                        <strong>{{ item.plant_name }}</strong><br>
+                        <small style="color:var(--muted);">{{ item.quantity }} × {{ item.unit_price|currency }}</small>
+                    </div>
+                    <div class="price">{{ item.line_total|currency }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="cart-summary">
+            <h3 style="color:var(--green);margin-bottom:16px;">Order Info</h3>
+            <div class="row"><span>Order Date</span><span>{{ order.created_at|date }}</span></div>
+            <div class="row"><span>Status</span><span>{{ order.status }}</span></div>
+            <div class="row"><span>Payment</span><span>{{ order.payment_method or '—' }}</span></div>
+            <div class="row"><span>Subtotal</span><span>{{ order.subtotal|currency }}</span></div>
+            <div class="row total"><span>Total</span><span>{{ order.total|currency }}</span></div>
+            <div style="margin-top:16px;">
+                <h4 style="color:var(--green);margin-bottom:8px;">Shipping</h4>
+                <p style="font-size:.88rem;color:var(--muted);">{{ order.shipping_address or '—' }}</p>
+                <p style="font-size:.88rem;color:var(--muted);">{{ order.contact_phone or '' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.order-items{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.order-item{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border);}
+.order-item:last-child{border-bottom:none;}
+.order-item .price{font-weight:700;color:var(--green);}
+.status-badge{padding:6px 14px;border-radius:50px;font-size:.8rem;font-weight:600;}
+.status-pending{background:#fff3cd;color:#856404;}
+.status-confirmed{background:#cce5ff;color:#004085;}
+.status-processing{background:#e2e3ff;color:#383d9c;}
+.status-ready{background:#d4edda;color:#155724;}
+.status-completed{background:#d1e7dd;color:#0f5132;}
+.status-cancelled{background:#f8d7da;color:#842029;}
+@media(max-width:768px){.container>div[style*="grid-template-columns"]{grid-template-columns:1fr!important;}}
+</style>
+{% endblock %}

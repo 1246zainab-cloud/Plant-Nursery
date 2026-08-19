@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Homepage Sections{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Homepage Sections</h2><span class="sub">Custom content blocks on the homepage</span></div>
+        <a href="{{ url_for('admin.homepage_section_new') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Section</a>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Image</th><th>Title</th><th>Type</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for s in sections %}
+                <tr>
+                    <td>{% if s.image %}<img src="{{ s.image }}" alt="" style="height:40px;border-radius:6px;">{% else %}<span class="sub">No image</span>{% endif %}</td>
+                    <td><strong>{{ s.title }}</strong></td>
+                    <td><span class="badge-pill badge-blue">{{ s.section_type }}</span></td>
+                    <td>{{ s.display_order }}</td>
+                    <td>{% if s.is_active %}<span class="badge-pill badge-green">Active</span>{% else %}<span class="badge-pill badge-red">Hidden</span>{% endif %}</td>
+                    <td>
+                        <div class="action-cell">
+                            <a href="{{ url_for('admin.homepage_section_edit', section_id=s.id) }}" class="btn-icon" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                            <form method="post" action="{{ url_for('admin.homepage_section_delete', section_id=s.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-icon btn-danger" title="Delete" data-confirm="Delete this section?"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px;">No sections.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

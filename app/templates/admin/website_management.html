@@ -1,0 +1,66 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Website Settings{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Website Management</h2><span class="sub">Control branding and global content</span></div>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label>Site Name</label>
+            <input type="text" name="site_name" class="form-control" value="{{ settings.get('site_name','') }}">
+        </div>
+        <div class="form-group">
+            <label>Tagline</label>
+            <input type="text" name="tagline" class="form-control" value="{{ settings.get('tagline','') }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>About (Short)</label>
+            <textarea name="about_short" class="form-control" rows="2">{{ settings.get('about_short','') }}</textarea>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>About (Full)</label>
+            <textarea name="about_full" class="form-control" rows="4">{{ settings.get('about_full','') }}</textarea>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Meta Description</label>
+            <textarea name="meta_description" class="form-control" rows="2">{{ settings.get('meta_description','') }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Contact Address</label>
+            <input type="text" name="contact_address" class="form-control" value="{{ settings.get('contact_address','') }}">
+        </div>
+        <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="text" name="contact_phone" class="form-control" value="{{ settings.get('contact_phone','') }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Contact Email</label>
+            <input type="email" name="contact_email" class="form-control" value="{{ settings.get('contact_email','') }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Footer About</label>
+            <textarea name="footer_about" class="form-control" rows="2">{{ settings.get('footer_about','') }}</textarea>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Copyright</label>
+            <input type="text" name="copyright" class="form-control" value="{{ settings.get('copyright','') }}">
+        </div>
+        <div class="form-group">
+            <label>Logo</label>
+            {% if settings.get('logo') %}<div style="margin-bottom:8px;"><img src="{{ settings.get('logo') }}" alt="logo" style="height:48px;border-radius:8px;"></div>{% endif %}
+            <input type="file" name="logo" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label>Favicon</label>
+            {% if settings.get('favicon') %}<div style="margin-bottom:8px;"><img src="{{ settings.get('favicon') }}" alt="favicon" style="height:32px;border-radius:6px;"></div>{% endif %}
+            <input type="file" name="favicon" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Settings</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

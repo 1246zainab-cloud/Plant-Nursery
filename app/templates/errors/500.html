@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="empty-state" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+    <i class="fa-solid fa-triangle-exclamation" style="font-size:4rem;color:var(--amber);"></i>
+    <h1 style="color:var(--amber);font-size:3rem;margin:16px 0 8px;">500</h1>
+    <h3>Something Went Wrong</h3>
+    <p>We're experiencing a technical issue. Please try again later.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-primary" style="margin-top:18px;">Back to Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Customers Report{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Customers Report</h2><span class="sub">{{ customers|length }} customers</span></div>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Joined</th><th>Orders</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for c in customers %}
+                <tr>
+                    <td><strong>{{ c.full_name or c.username }}</strong></td>
+                    <td>{{ c.username }}</td>
+                    <td>{{ c.email }}</td>
+                    <td>{{ c.phone or '—' }}</td>
+                    <td>{{ c.created_at|date }}</td>
+                    <td>{{ c.orders_count }}</td>
+                    <td>{% if c.is_active %}<span class="badge-pill badge-green">Active</span>{% else %}<span class="badge-pill badge-red">Disabled</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

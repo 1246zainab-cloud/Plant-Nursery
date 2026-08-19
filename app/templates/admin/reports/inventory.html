@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Inventory Report{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Inventory Report</h2><span class="sub">Stock sorted low to high</span></div>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Plant</th><th>Category</th><th>Stock</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for p in plants %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td>{{ p.category.name if p.category else '—' }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>{% if p.stock <= 0 %}<span class="badge-pill badge-red">Out of Stock</span>{% elif p.stock <= 10 %}<span class="badge-pill badge-amber">Low</span>{% else %}<span class="badge-pill badge-green">Healthy</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

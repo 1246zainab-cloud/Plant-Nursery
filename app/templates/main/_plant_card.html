@@ -1,0 +1,28 @@
+<div class="plant-card">
+    <div class="img-wrap">
+        {% if plant.image %}
+        <img src="{{ plant.image }}" alt="{{ plant.name }}" loading="lazy">
+        {% else %}
+        <img src="{{ url_for('static', filename='images/placeholder.svg') }}" alt="{{ plant.name }}" loading="lazy">
+        {% endif %}
+        {% if plant.is_featured %}<span class="badge-featured">Featured</span>{% endif %}
+        {% if plant.stock <= 0 %}<span class="badge-out">Out of Stock</span>{% endif %}
+    </div>
+    <div class="body">
+        <span class="cat">{{ plant.category.name if plant.category else 'Plant' }}</span>
+        <h3>{{ plant.name }}</h3>
+        <p class="desc">{{ plant.short_description or plant.description[:80] }}</p>
+        <div class="price-row">
+            <span class="price">{{ plant.price|currency }}</span>
+            <span class="stock">{% if plant.stock > 0 %}{{ plant.stock }} in stock{% else %}Out of stock{% endif %}</span>
+        </div>
+        <div class="actions">
+            <a href="{{ url_for('main.plant_detail', slug=plant.slug) }}" class="btn btn-outline btn-sm">View Details</a>
+            {% if plant.stock > 0 %}
+            <button class="btn btn-primary btn-sm" data-add-to-cart data-plant-id="{{ plant.id }}"><i class="fa-solid fa-cart-plus"></i></button>
+            {% else %}
+            <button class="btn btn-ghost btn-sm" disabled>Unavailable</button>
+            {% endif %}
+        </div>
+    </div>
+</div>

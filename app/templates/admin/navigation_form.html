@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{% if item %}Edit Navigation{% else %}Add Navigation{% endif %}{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>{% if item %}Edit Navigation Item{% else %}Add Navigation Item{% endif %}</h2><span class="sub">Menu link</span></div>
+    </div>
+    <form method="post" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label>Label *</label>
+            <input type="text" name="label" class="form-control" value="{{ item.label if item else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label>URL *</label>
+            <input type="text" name="url" class="form-control" value="{{ item.url if item else '' }}" placeholder="/plants" required>
+        </div>
+        <div class="form-group">
+            <label>Location</label>
+            <select name="location" class="form-control">
+                <option value="main" {% if item and item.location == 'main' %}selected{% endif %}>Main Header</option>
+                <option value="footer" {% if item and item.location == 'footer' %}selected{% endif %}>Footer</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="display_order" class="form-control" value="{{ item.display_order if item else 0 }}">
+        </div>
+        <div class="form-group">
+            <label class="checkbox"><input type="checkbox" name="is_active" {% if not item or item.is_active %}checked{% endif %}> Active</label>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+            <a href="{{ url_for('admin.navigation') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

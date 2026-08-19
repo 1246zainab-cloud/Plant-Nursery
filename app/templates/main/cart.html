@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="margin-top:40px;margin-bottom:60px;">
+    <h1 style="color:var(--green);margin-bottom:24px;"><i class="fa-solid fa-cart-shopping"></i> Your Cart</h1>
+
+    {% if items %}
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:30px;align-items:start;">
+        <div>
+            <table class="cart-table">
+                <thead>
+                    <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Total</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td data-label="Product">
+                            <div style="display:flex;gap:12px;align-items:center;">
+                                {% if item.plant.image %}<img src="{{ item.plant.image }}" alt="{{ item.plant.name }}">{% else %}<img src="{{ url_for('static', filename='images/placeholder.svg') }}" alt="">{% endif %}
+                                <div>
+                                    <strong>{{ item.plant.name }}</strong><br>
+                                    <small style="color:var(--muted);">{{ item.plant.category.name if item.plant.category else '' }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="Price">{{ item.plant.price|currency }}</td>
+                        <td data-label="Quantity">
+                            <div class="qty-control">
+                                <button class="qty-btn" onclick="updateQty({{ item.plant.id }}, -1)"><i class="fa-solid fa-minus"></i></button>
+                                <span id="qty-{{ item.plant.id }}">{{ item.quantity }}</span>
+                                <button class="qty-btn" onclick="updateQty({{ item.plant.id }}, 1)"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </td>
+                        <td data-label="Total">{{ item.line_total|currency }}</td>
+                        <td data-label=""><button class="btn btn-danger btn-sm" onclick="removeItem({{ item.plant.id }})"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary">
+            <h3 style="color:var(--green);margin-bottom:16px;">Order Summary</h3>
+            <div class="row"><span>Subtotal</span><span id="cartTotal">{{ total|currency }}</span></div>
+            <div class="row"><span>Shipping</span><span>Calculated at checkout</span></div>
+            <div class="row total"><span>Total</span><span id="cartTotal2">{{ total|currency }}</span></div>
+            <a href="{{ url_for('customer.checkout') }}" class="btn btn-primary btn-block" style="margin-top:18px;"><i class="fa-solid fa-credit-card"></i> Proceed to Checkout</a>
+            <a href="{{ url_for('main.plants') }}" class="btn btn-outline btn-block" style="margin-top:10px;">Continue Shopping</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added any plants yet.</p>
+        <a href="{{ url_for('main.plants') }}" class="btn btn-primary" style="margin-top:14px;">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function getCsrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute('content') : '';
+}
+function updateQty(plantId, delta) {
+    fetch('/cart/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'plant_id=' + plantId + '&quantity=' + (document.getElementById('qty-' + plantId).textContent * 1 + delta) + '&csrf_token=' + encodeURIComponent(getCsrfToken())
+    }).then(function(r){ return r.json(); }).then(function(d){
+        if (d.success) location.reload();
+    });
+}
+function removeItem(plantId) {
+    fetch('/cart/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'plant_id=' + plantId + '&csrf_token=' + encodeURIComponent(getCsrfToken())
+    }).then(function(r){ return r.json(); }).then(function(d){
+        if (d.success) location.reload();
+    });
+}
+</script>
+
+<style>
+@media (max-width: 768px) {
+    .container > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+}
+</style>
+{% endblock %}

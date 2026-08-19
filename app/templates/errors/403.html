@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="empty-state" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+    <i class="fa-solid fa-lock" style="font-size:4rem;color:var(--red);"></i>
+    <h1 style="color:var(--red);font-size:3rem;margin:16px 0 8px;">403</h1>
+    <h3>Access Denied</h3>
+    <p>You don't have permission to access this page.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-primary" style="margin-top:18px;">Back to Home</a>
+</div>
+{% endblock %}

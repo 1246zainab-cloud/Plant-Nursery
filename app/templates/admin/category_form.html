@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{% if category %}Edit Category{% else %}Add Category{% endif %}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width:640px;">
+    <div class="panel-head"><h2>{% if category %}Edit Category{% else %}Add Category{% endif %}</h2></div>
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label>Category Name *</label>
+            <input type="text" name="name" class="form-control" required value="{{ category.name if category else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" class="form-control">{{ category.description if category else '' }}</textarea>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Display Order</label>
+                <input type="number" name="display_order" class="form-control" value="{{ category.display_order if category else 0 }}">
+            </div>
+            <div class="form-group checkbox-inline" style="align-self:end;padding-bottom:10px;">
+                <input type="checkbox" name="is_active" id="active" {% if not category or category.is_active %}checked{% endif %}>
+                <label for="active" style="margin:0;">Active</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Category Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            {% if category and category.image %}<div class="current-image"><img src="{{ category.image }}" alt=""></div>{% endif %}
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+            <a href="{{ url_for('admin.categories') }}" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

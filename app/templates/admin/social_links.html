@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Social Links{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Social Links</h2><span class="sub">Connect social media profiles</span></div>
+        <a href="{{ url_for('admin.social_new') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Link</a>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Platform</th><th>URL</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for link in links %}
+                <tr>
+                    <td><strong>{{ link.platform }}</strong></td>
+                    <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+                    <td>{{ link.display_order }}</td>
+                    <td>{% if link.is_active %}<span class="badge-pill badge-green">Active</span>{% else %}<span class="badge-pill badge-red">Hidden</span>{% endif %}</td>
+                    <td>
+                        <div class="action-cell">
+                            <a href="{{ url_for('admin.social_edit', link_id=link.id) }}" class="btn-icon" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                            <form method="post" action="{{ url_for('admin.social_delete', link_id=link.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-icon btn-danger" title="Delete" data-confirm="Delete this link?"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px;">No social links.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

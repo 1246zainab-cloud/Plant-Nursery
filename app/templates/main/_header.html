@@ -1,0 +1,53 @@
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="{{ url_for('main.index') }}" class="brand">
+            {% if site.logo %}
+            <img src="{{ site.logo }}" alt="{{ site.name }} logo" class="brand-logo">
+            {% else %}
+            <span class="brand-icon"><i class="fa-solid fa-leaf"></i></span>
+            {% endif %}
+            <span class="brand-name">{{ site.name }}</span>
+        </a>
+
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="main-nav" id="mainNav">
+            <ul class="nav-list">
+                {% for item in nav_items %}
+                <li><a href="{{ item.url }}" class="{% if request.path == item.url %}active{% endif %}">{{ item.label }}</a></li>
+                {% endfor %}
+            </ul>
+
+            <div class="header-actions">
+                <form action="{{ url_for('main.search') }}" method="get" class="search-form">
+                    <input type="search" name="q" placeholder="Search plants..." value="{{ request.args.get('q','') }}">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+
+                <a href="{{ url_for('main.cart') }}" class="icon-btn cart-btn" title="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    {% if cart_count > 0 %}<span class="badge">{{ cart_count }}</span>{% endif %}
+                </a>
+
+                <a href="{{ url_for('main.notifications') }}" class="icon-btn" title="Notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    {% if unread_notifications > 0 %}<span class="badge">{{ unread_notifications }}</span>{% endif %}
+                </a>
+
+                {% if current_user.is_authenticated %}
+                    {% if current_user.user_type == 'customer' %}
+                    <a href="{{ url_for('customer.profile') }}" class="btn btn-outline btn-sm">My Account</a>
+                    {% elif current_user.user_type in ('admin','staff') %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm">Admin Panel</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost btn-sm">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline btn-sm">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </div>
+</header>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Our Plants</h1>
+        <p>Browse our complete collection of healthy, nursery-grown plants.</p>
+    </div>
+</div>
+
+<div class="container" style="margin-top:40px;">
+    <form method="get" class="filter-bar">
+        <div class="form-group">
+            <label>Search</label>
+            <input type="text" name="search" class="form-control" value="{{ search }}" placeholder="Plant name...">
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <select name="category" class="form-control">
+                <option value="">All Categories</option>
+                {% for c in categories %}
+                <option value="{{ c.id }}" {% if category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Availability</label>
+            <select name="availability" class="form-control">
+                <option value="">All</option>
+                <option value="in_stock" {% if availability == 'in_stock' %}selected{% endif %}>In Stock</option>
+                <option value="out_stock" {% if availability == 'out_stock' %}selected{% endif %}>Out of Stock</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Min Price</label>
+            <input type="number" step="0.01" name="min_price" class="form-control" value="{{ min_price or '' }}" placeholder="0">
+        </div>
+        <div class="form-group">
+            <label>Max Price</label>
+            <input type="number" step="0.01" name="max_price" class="form-control" value="{{ max_price or '' }}" placeholder="Any">
+        </div>
+        <div class="form-group">
+            <label>Sort By</label>
+            <select name="sort" class="form-control">
+                <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+                <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>Name A-Z</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-filter"></i> Filter</button>
+        </div>
+    </form>
+
+    {% if plants %}
+    <div class="plant-grid" style="margin-top:30px;">
+        {% for plant in plants %}
+        {% include 'main/_plant_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h3>No plants found</h3><p>Try adjusting your filters.</p></div>
+    {% endif %}
+
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                <a href="{{ url_for('main.plants', page=p, search=search, category=category_id, availability=availability, min_price=min_price, max_price=max_price, sort=sort) }}" class="{% if p == pagination.page %}current{% endif %}">{{ p }}</a>
+            {% else %}
+                <span>…</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

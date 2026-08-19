@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h2>Staff / Admin Login</h2>
+        <p class="subtitle">Restricted area — authorized personnel only</p>
+
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label>Username or Email</label>
+                <input type="text" name="identifier" class="form-control" required placeholder="Enter admin/staff username or email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" required placeholder="Enter password">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+        </form>
+
+        <div class="form-footer">
+            <a href="{{ url_for('auth.login') }}"><i class="fa-solid fa-user"></i> Customer Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

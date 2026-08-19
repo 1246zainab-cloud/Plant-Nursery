@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Admin | {{ site.name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                {% if site.logo %}<img src="{{ site.logo }}" alt="logo" class="admin-logo">{% else %}<i class="fa-solid fa-leaf"></i>{% endif %}
+                <span>{{ site.name }}</span>
+            </div>
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint=='admin.dashboard' %}active{% endif %}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+
+                <div class="nav-group">Management</div>
+                <a href="{{ url_for('admin.plants') }}" class="{% if 'plant' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-leaf"></i> Plants</a>
+                <a href="{{ url_for('admin.categories') }}" class="{% if 'categor' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-tags"></i> Categories</a>
+                <a href="{{ url_for('admin.inventory') }}" class="{% if 'inventory' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
+                <a href="{{ url_for('admin.customers') }}" class="{% if 'customer' in request.endpoint and 'customer_' not in request.endpoint %}active{% endif %}"><i class="fa-solid fa-users"></i> Customers</a>
+                <a href="{{ url_for('admin.orders') }}" class="{% if 'order' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+                <a href="{{ url_for('admin.sales') }}" class="{% if 'sales' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-chart-line"></i> Sales</a>
+                <a href="{{ url_for('admin.suppliers') }}" class="{% if 'supplier' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-truck"></i> Suppliers</a>
+
+                <div class="nav-group">Communication</div>
+                <a href="{{ url_for('admin.messages') }}" class="{% if 'message' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-envelope"></i> Messages
+                    {% if unread_messages > 0 %}<span class="nav-badge">{{ unread_messages }}</span>{% endif %}
+                </a>
+                <a href="{{ url_for('admin.notifications') }}" class="{% if 'notification' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-bell"></i> Notifications</a>
+
+                <div class="nav-group">Website</div>
+                <a href="{{ url_for('admin.website_management') }}" class="{% if 'website' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-globe"></i> Website</a>
+                <a href="{{ url_for('admin.homepage_management') }}" class="{% if 'homepage' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-house"></i> Homepage</a>
+                <a href="{{ url_for('admin.navigation') }}" class="{% if 'navigation' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-bars"></i> Navigation</a>
+                <a href="{{ url_for('admin.footer_management') }}" class="{% if 'footer' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-shoe-prints"></i> Footer</a>
+                <a href="{{ url_for('admin.banners') }}" class="{% if 'banner' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-image"></i> Banners</a>
+                <a href="{{ url_for('admin.announcements') }}" class="{% if 'announcement' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-bullhorn"></i> Announcements</a>
+                <a href="{{ url_for('admin.social_links') }}" class="{% if 'social' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-share-nodes"></i> Social Links</a>
+
+                <div class="nav-group">System</div>
+                <a href="{{ url_for('admin.staff') }}" class="{% if 'staff' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-user-shield"></i> Staff / Users</a>
+                <a href="{{ url_for('admin.reports') }}" class="{% if 'report' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-file-lines"></i> Reports</a>
+                <a href="{{ url_for('admin.settings') }}" class="{% if 'settings' in request.endpoint %}active{% endif %}"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
+        </aside>
+
+        <!-- Main -->
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <button class="admin-menu-toggle" id="adminMenuToggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="admin-topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+                <div class="admin-topbar-actions">
+                    <a href="{{ url_for('main.index') }}" class="icon-btn" title="View Site" target="_blank"><i class="fa-solid fa-up-right-from-square"></i></a>
+                    <a href="{{ url_for('admin.notifications') }}" class="icon-btn" title="Notifications">
+                        <i class="fa-solid fa-bell"></i>
+                        {% if unread_notifications > 0 %}<span class="badge">{{ unread_notifications }}</span>{% endif %}
+                    </a>
+                    <span class="admin-user">
+                        <i class="fa-solid fa-circle-user"></i> {{ current_user.full_name or current_user.username }}
+                    </span>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            </header>
+
+            <main class="admin-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">
+                        <span>{{ message }}</span>
+                        <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <div class="admin-overlay" id="adminOverlay"></div>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

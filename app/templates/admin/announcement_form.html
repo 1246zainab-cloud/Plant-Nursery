@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{% if announcement %}Edit Announcement{% else %}Add Announcement{% endif %}{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>{% if announcement %}Edit Announcement{% else %}Add Announcement{% endif %}</h2><span class="sub">Announcement bar message</span></div>
+    </div>
+    <form method="post" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Title</label>
+            <input type="text" name="title" class="form-control" value="{{ announcement.title if announcement else '' }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Message *</label>
+            <textarea name="message" class="form-control" rows="3" required>{{ announcement.message if announcement else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="display_order" class="form-control" value="{{ announcement.display_order if announcement else 0 }}">
+        </div>
+        <div class="form-group">
+            <label class="checkbox"><input type="checkbox" name="is_active" {% if not announcement or announcement.is_active %}checked{% endif %}> Active</label>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+            <a href="{{ url_for('admin.announcements') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

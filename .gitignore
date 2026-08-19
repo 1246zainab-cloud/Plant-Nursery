@@ -1,0 +1,35 @@
+# Environment
+.env
+*.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.Python
+build/
+dist/
+venv/
+.venv/
+env/
+
+# Database
+*.db
+*.sqlite3
+
+# Uploads (keep folder, ignore contents)
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

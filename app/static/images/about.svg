@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <rect width="600" height="400" fill="#e8f5e9"/>
+  <rect x="0" y="300" width="600" height="100" fill="#c8e6c9"/>
+  <circle cx="120" cy="90" r="46" fill="#ffd54f"/>
+  <path d="M300 360c0-90 45-150 45-210 0-37-23-67-45-67s-45 30-45 67c0 60 45 120 45 210z" fill="#66bb6a"/>
+  <path d="M300 360c-16-74-74-104-134-104 0 60 60 104 134 104z" fill="#43a047"/>
+  <path d="M300 360c16-74 74-104 134-104 0 60-60 104-134 104z" fill="#81c784"/>
+  <path d="M470 360c0-60 30-100 30-140 0-25-15-45-30-45s-30 20-30 45c0 40 30 80 30 140z" fill="#a5d6a7"/>
+  <text x="300" y="385" font-family="Poppins, Arial, sans-serif" font-size="20" fill="#2e7d32" text-anchor="middle">Our Green Nursery</text>
+</svg>

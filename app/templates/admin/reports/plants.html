@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Plants Report{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Plants Report</h2><span class="sub">{{ plants|length }} plants</span></div>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Featured</th><th>Popular</th><th>Available</th></tr></thead>
+            <tbody>
+                {% for p in plants %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td>{{ p.category.name if p.category else '—' }}</td>
+                    <td>{{ p.price|currency }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>{% if p.is_featured %}<i class="fa-solid fa-check" style="color:var(--green);"></i>{% else %}—{% endif %}</td>
+                    <td>{% if p.is_popular %}<i class="fa-solid fa-check" style="color:var(--green);"></i>{% else %}—{% endif %}</td>
+                    <td>{% if p.is_available %}<span class="badge-pill badge-green">Yes</span>{% else %}<span class="badge-pill badge-red">No</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

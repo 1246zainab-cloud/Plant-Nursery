@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <rect width="400" height="300" fill="#e8f5e9"/>
+  <path d="M200 230c0-70 35-118 35-164 0-29-18-53-35-53s-35 24-35 53c0 46 35 94 35 164z" fill="#a5d6a7"/>
+  <path d="M200 230c-12-58-58-82-105-82 0 47 47 82 105 82z" fill="#66bb6a"/>
+  <path d="M200 230c12-58 58-82 105-82 0 47-47 82-105 82z" fill="#81c784"/>
+  <text x="200" y="270" font-family="Poppins, Arial, sans-serif" font-size="16" fill="#2e7d32" text-anchor="middle">Plant Image</text>
+</svg>

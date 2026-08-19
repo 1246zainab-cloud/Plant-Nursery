@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Orders Report{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Orders Report</h2><span class="sub">{{ orders|length }} orders</span></div>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Order #</th><th>Customer</th><th>Email</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td><strong>{{ o.order_number }}</strong></td>
+                    <td>{{ o.customer.full_name or o.customer.username }}</td>
+                    <td>{{ o.customer.email }}</td>
+                    <td>{{ o.total_quantity }}</td>
+                    <td>{{ o.total|currency }}</td>
+                    <td>{{ o.created_at|datetime }}</td>
+                    <td><span class="badge-pill badge-{{ 'green' if o.status == 'Completed' else 'amber' if o.status in ['Processing','Ready','Confirmed'] else 'red' if o.status == 'Cancelled' else 'blue' }}">{{ o.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

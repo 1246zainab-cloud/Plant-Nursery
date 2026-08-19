@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Sales Report{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Sales Report</h2><span class="sub">{{ sales|length }} transactions</span></div>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Date</th><th>Order #</th><th>Plant</th><th>Customer</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for s in sales %}
+                <tr>
+                    <td>{{ s.created_at|date }}</td>
+                    <td>{{ s.order_number }}</td>
+                    <td>{{ s.plant_name }}</td>
+                    <td>{{ s.customer_name }}</td>
+                    <td>{{ s.quantity }}</td>
+                    <td>{{ s.unit_price|currency }}</td>
+                    <td>{{ s.amount|currency }}</td>
+                    <td><span class="badge-pill badge-{{ 'green' if s.status == 'Completed' else 'amber' if s.status in ['Processing','Ready','Confirmed'] else 'red' if s.status == 'Cancelled' else 'blue' }}">{{ s.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

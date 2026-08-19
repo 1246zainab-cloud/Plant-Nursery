@@ -1,0 +1,75 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Sales{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Sales Overview</h2><span class="sub">Revenue and sales analytics</span></div>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div><div><span class="stat-label">Total Sales</span><span class="stat-value">{{ total_sales|currency }}</span></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-receipt"></i></div><div><span class="stat-label">Completed Orders</span><span class="stat-value">{{ total_orders }}</span></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div><div><span class="stat-label">Completed</span><span class="stat-value">{{ completed|currency }}</span></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div><div><span class="stat-label">Pending</span><span class="stat-value">{{ pending|currency }}</span></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fa-solid fa-ban"></i></div><div><span class="stat-label">Cancelled</span><span class="stat-value">{{ cancelled|currency }}</span></div></div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="panel-sub">
+            <h3>Top Plants by Revenue</h3>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Plant</th><th>Qty</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                        {% for name, amount, qty in by_plant %}
+                        <tr><td><strong>{{ name }}</strong></td><td>{{ qty }}</td><td>{{ amount|currency }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;">No sales yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-sub">
+            <h3>Revenue by Category</h3>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Category</th><th>Revenue</th></tr></thead>
+                    <tbody>
+                        {% for name, amount in by_category %}
+                        <tr><td><strong>{{ name }}</strong></td><td>{{ amount|currency }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="2" style="text-align:center;color:var(--muted);padding:20px;">No sales yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-sub">
+        <h3>Recent Sales</h3>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Date</th><th>Order #</th><th>Plant</th><th>Customer</th><th>Qty</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for s in recent %}
+                    <tr>
+                        <td>{{ s.created_at|date }}</td>
+                        <td>{{ s.order_number }}</td>
+                        <td>{{ s.plant_name }}</td>
+                        <td>{{ s.customer_name }}</td>
+                        <td>{{ s.quantity }}</td>
+                        <td>{{ s.amount|currency }}</td>
+                        <td><span class="badge-pill badge-{{ 'green' if s.status == 'Completed' else 'amber' if s.status in ['Processing','Ready','Confirmed'] else 'red' if s.status == 'Cancelled' else 'blue' }}">{{ s.status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No sales yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Footer{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Footer Management</h2><span class="sub">Control footer content and links</span></div>
+    </div>
+    <form method="post" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>About Text</label>
+            <textarea name="about_text" class="form-control" rows="3">{{ footer.about_text if footer else '' }}</textarea>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Copyright Text</label>
+            <input type="text" name="copyright_text" class="form-control" value="{{ footer.copyright_text if footer else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Contact Address</label>
+            <input type="text" name="contact_address" class="form-control" value="{{ footer.contact_address if footer else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="text" name="contact_phone" class="form-control" value="{{ footer.contact_phone if footer else '' }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Contact Email</label>
+            <input type="email" name="contact_email" class="form-control" value="{{ footer.contact_email if footer else '' }}">
+        </div>
+        <div class="form-group">
+            <label class="checkbox"><input type="checkbox" name="show_categories" {% if footer and footer.show_categories %}checked{% endif %}> Show Categories in Footer</label>
+        </div>
+        <div class="form-group">
+            <label class="checkbox"><input type="checkbox" name="show_quick_links" {% if footer and footer.show_quick_links %}checked{% endif %}> Show Quick Links in Footer</label>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save Footer</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

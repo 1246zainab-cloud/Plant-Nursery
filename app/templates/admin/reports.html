@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Reports{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Reports & Analytics</h2><span class="sub">Exportable business reports</span></div>
+    </div>
+    <div class="report-grid">
+        <a href="{{ url_for('admin.report_plants') }}" class="report-card">
+            <div class="report-icon"><i class="fa-solid fa-leaf"></i></div>
+            <h3>Plants Report</h3>
+            <p>Complete catalog with pricing and stock</p>
+        </a>
+        <a href="{{ url_for('admin.report_inventory') }}" class="report-card">
+            <div class="report-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <h3>Inventory Report</h3>
+            <p>Stock levels and low-stock alerts</p>
+        </a>
+        <a href="{{ url_for('admin.report_customers') }}" class="report-card">
+            <div class="report-icon"><i class="fa-solid fa-users"></i></div>
+            <h3>Customers Report</h3>
+            <p>Customer accounts and activity</p>
+        </a>
+        <a href="{{ url_for('admin.report_orders') }}" class="report-card">
+            <div class="report-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <h3>Orders Report</h3>
+            <p>All orders with status and totals</p>
+        </a>
+        <a href="{{ url_for('admin.report_sales') }}" class="report-card">
+            <div class="report-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+            <h3>Sales Report</h3>
+            <p>Detailed sales transactions</p>
+        </a>
+        <a href="{{ url_for('admin.report_categories') }}" class="report-card">
+            <div class="report-icon"><i class="fa-solid fa-tags"></i></div>
+            <h3>Categories Report</h3>
+            <p>Category breakdown and plant counts</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

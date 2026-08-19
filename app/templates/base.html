@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}{{ site.name }}{% endblock %}</title>
+    {% if site.favicon %}
+    <link rel="icon" href="{{ site.favicon }}">
+    {% else %}
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root{
+            --green:#1b5e20; --green-light:#2e7d32; --green-lighter:#43a047;
+            --green-soft:#e8f5e9; --green-bg:#f4faf5; --white:#ffffff;
+            --text:#1f2d22; --muted:#6b7c70; --border:#e0ebe2;
+            --amber:#f59e0b; --red:#dc2626; --shadow:0 4px 20px rgba(27,94,32,.08);
+        }
+    </style>
+</head>
+<body>
+    {% include 'main/_header.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+                <span>{{ message }}</span>
+                <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'main/_footer.html' %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

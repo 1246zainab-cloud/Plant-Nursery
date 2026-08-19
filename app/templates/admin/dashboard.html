@@ -1,0 +1,146 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+    <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-leaf"></i></div><div><div class="stat-num">{{ total_plants }}</div><div class="stat-label">Total Plants</div></div></div>
+    <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-tags"></i></div><div><div class="stat-num">{{ total_categories }}</div><div class="stat-label">Categories</div></div></div>
+    <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-users"></i></div><div><div class="stat-num">{{ total_customers }}</div><div class="stat-label">Customers</div></div></div>
+    <div class="stat-card"><div class="stat-icon amber"><i class="fa-solid fa-cart-shopping"></i></div><div><div class="stat-num">{{ total_orders }}</div><div class="stat-label">Total Orders</div></div></div>
+    <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-hourglass-half"></i></div><div><div class="stat-num">{{ pending_orders }}</div><div class="stat-label">Pending Orders</div></div></div>
+    <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-check"></i></div><div><div class="stat-num">{{ completed_orders }}</div><div class="stat-label">Completed</div></div></div>
+    <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-boxes-stacked"></i></div><div><div class="stat-num">{{ available_stock }}</div><div class="stat-label">Available Stock</div></div></div>
+    <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-dollar-sign"></i></div><div><div class="stat-num">{{ total_sales|currency }}</div><div class="stat-label">Total Sales</div></div></div>
+</div>
+
+<div class="two-col">
+    <!-- Recent Orders -->
+    <div class="panel">
+        <div class="panel-head"><h2>Recent Orders</h2><a href="{{ url_for('admin.orders') }}" class="btn btn-outline btn-sm">View All</a></div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for o in recent_orders %}
+                    <tr>
+                        <td><a href="{{ url_for('admin.order_detail', order_id=o.id) }}">{{ o.order_number }}</a></td>
+                        <td>{{ o.customer.full_name or o.customer.username if o.customer else '—' }}</td>
+                        <td>{{ o.total|currency }}</td>
+                        <td><span class="badge-pill status-{{ o.status.lower() }}">{{ o.status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" style="text-align:center;color:var(--muted);">No orders yet</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Customers -->
+    <div class="panel">
+        <div class="panel-head"><h2>Recent Customers</h2><a href="{{ url_for('admin.customers') }}" class="btn btn-outline btn-sm">View All</a></div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
+                <tbody>
+                    {% for c in recent_customers %}
+                    <tr>
+                        <td>{{ c.full_name or c.username }}</td>
+                        <td>{{ c.email }}</td>
+                        <td>{{ c.created_at|date }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="text-align:center;color:var(--muted);">No customers yet</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="two-col">
+    <!-- Low stock -->
+    <div class="panel">
+        <div class="panel-head"><h2>Low Stock Alert</h2><a href="{{ url_for('admin.inventory') }}" class="btn btn-outline btn-sm">Manage</a></div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Plant</th><th>Stock</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for p in low_stock %}
+                    <tr>
+                        <td>{{ p.name }}</td>
+                        <td>{{ p.stock }}</td>
+                        <td>{% if p.stock <= 0 %}<span class="badge-pill badge-red">Out</span>{% else %}<span class="badge-pill badge-amber">Low</span>{% endif %}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="text-align:center;color:var(--muted);">All stock healthy</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Messages & Notifications -->
+    <div class="panel">
+        <div class="panel-head"><h2>Latest Messages</h2><a href="{{ url_for('admin.messages') }}" class="btn btn-outline btn-sm">View All</a></div>
+        {% for m in latest_messages %}
+        <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+            <strong>{{ m.name }}</strong> <small style="color:var(--muted);">{{ m.created_at|date }}</small>
+            <p style="font-size:.85rem;color:var(--muted);">{{ m.subject or m.body[:60] }}</p>
+        </div>
+        {% else %}
+        <p style="color:var(--muted);text-align:center;padding:20px;">No messages</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="chart-grid">
+    <div class="chart-box">
+        <h3>Sales by Category</h3>
+        {% set max_cat = sales_by_category|map(attribute=1)|list %}
+        {% set max_val = max_cat[0] if max_cat else 1 %}
+        {% for name, amount in sales_by_category %}
+        <div class="bar-row">
+            <div class="bar-label">{{ name }}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:{{ (amount / max_val * 100) if max_val else 0 }}%">{{ amount|currency }}</div></div>
+        </div>
+        {% else %}
+        <p style="color:var(--muted);">No sales data yet.</p>
+        {% endfor %}
+    </div>
+    <div class="chart-box">
+        <h3>Monthly Sales</h3>
+        {% set max_m = monthly|map(attribute=1)|list %}
+        {% set max_mv = max_m[0] if max_m else 1 %}
+        {% for month, amount in monthly %}
+        <div class="bar-row">
+            <div class="bar-label">{{ month }}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:{{ (amount / max_mv * 100) if max_mv else 0 }}%">{{ amount|currency }}</div></div>
+        </div>
+        {% else %}
+        <p style="color:var(--muted);">No sales data yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-head"><h2>Popular Plants</h2><a href="{{ url_for('admin.plants') }}" class="btn btn-outline btn-sm">Manage Plants</a></div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Stock</th></tr></thead>
+            <tbody>
+                {% for p in popular_plants %}
+                <tr>
+                    <td>{% if p.image %}<img src="{{ p.image }}" alt="">{% else %}<span style="color:var(--muted);">—</span>{% endif %}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.price|currency }}</td>
+                    <td>{{ p.stock }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" style="text-align:center;color:var(--muted);">No popular plants marked</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

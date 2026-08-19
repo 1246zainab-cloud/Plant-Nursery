@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Messages{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Customer Messages</h2><span class="sub">Inquiries and replies</span></div>
+        <div style="display:flex;gap:8px;">
+            <a href="{{ url_for('admin.messages') }}" class="btn btn-outline {% if not filter_unread %}active{% endif %}">All</a>
+            <a href="{{ url_for('admin.messages', unread='1') }}" class="btn btn-outline {% if filter_unread == '1' %}active{% endif %}">Unread ({{ unread_count }})</a>
+        </div>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>From</th><th>Email</th><th>Subject</th><th>Received</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for m in messages %}
+                <tr>
+                    <td><strong>{{ m.name }}</strong></td>
+                    <td>{{ m.email }}</td>
+                    <td>{{ m.subject or '(no subject)' }}</td>
+                    <td>{{ m.created_at|datetime }}</td>
+                    <td>{% if m.is_read %}<span class="badge-pill badge-green">Read</span>{% else %}<span class="badge-pill badge-amber">Unread</span>{% endif %}{% if m.admin_reply %} <span class="badge-pill badge-blue">Replied</span>{% endif %}</td>
+                    <td>
+                        <div class="action-cell">
+                            <a href="{{ url_for('admin.message_detail', message_id=m.id) }}" class="btn-icon" title="View"><i class="fa-solid fa-eye"></i></a>
+                            <form method="post" action="{{ url_for('admin.message_delete', message_id=m.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-icon btn-danger" title="Delete" data-confirm="Delete this message?"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px;">No messages found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% for pg in pagination.iter_pages() %}
+            {% if pg %}<a href="{{ url_for('admin.messages', page=pg, unread=filter_unread) }}" class="{% if pg == pagination.page %}current{% endif %}">{{ pg }}</a>
+            {% else %}<span>…</span>{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

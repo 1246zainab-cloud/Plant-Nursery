@@ -1,0 +1,62 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Account Settings</h2><span class="sub">Manage your admin account</span></div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="panel-sub">
+            <h3>Profile</h3>
+            <form method="post" class="form-grid">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="profile">
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Username</label>
+                    <input type="text" class="form-control" value="{{ current_user.username }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" class="form-control" value="{{ current_user.full_name or '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ current_user.email }}">
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Phone</label>
+                    <input type="text" name="phone" class="form-control" value="{{ current_user.phone or '' }}">
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Update Profile</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel-sub">
+            <h3>Change Password</h3>
+            <form method="post" class="form-grid">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="action" value="password">
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Current Password</label>
+                    <input type="password" name="current_password" class="form-control" required>
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>New Password</label>
+                    <input type="password" name="new_password" class="form-control" required>
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label>Confirm New Password</label>
+                    <input type="password" name="confirm_password" class="form-control" required>
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-key"></i> Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

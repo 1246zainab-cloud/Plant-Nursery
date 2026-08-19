@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>About {{ site.name }}</h1>
+        <p>Our story, our mission, and our love for plants.</p>
+    </div>
+</div>
+
+<div class="container" style="margin-top:50px;margin-bottom:60px;">
+    <div class="about-home">
+        <div class="img">
+            <img src="{{ url_for('static', filename='images/about.svg') }}" alt="Nursery">
+        </div>
+        <div>
+            <span class="eyebrow">Who We Are</span>
+            <h2>Rooted in Passion, Grown with Care</h2>
+            {% if about_text %}
+            <p style="color:var(--muted);">{{ about_text }}</p>
+            {% else %}
+            <p style="color:var(--muted);">{{ site.about_short }}</p>
+            <p style="color:var(--muted);">We are a dedicated plant nursery committed to bringing nature closer to people. From indoor companions to outdoor showpieces, every plant we grow is nurtured with expertise and love.</p>
+            {% endif %}
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-check-circle"></i> Sustainably grown, healthy plants</li>
+                <li><i class="fa-solid fa-check-circle"></i> Personalized care advice</li>
+                <li><i class="fa-solid fa-check-circle"></i> Trusted by hundreds of happy customers</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section-head" style="margin-top:60px;">
+        <span class="eyebrow">Why Choose Us</span>
+        <h2>What Makes Us Different</h2>
+    </div>
+    <div class="cat-grid">
+        <div class="cat-card"><div class="cat-icon"><i class="fa-solid fa-leaf"></i></div><h3>Premium Quality</h3><div class="count">Hand-inspected plants</div></div>
+        <div class="cat-card"><div class="cat-icon"><i class="fa-solid fa-truck-fast"></i></div><h3>Fast Delivery</h3><div class="count">Safe & eco packaging</div></div>
+        <div class="cat-card"><div class="cat-icon"><i class="fa-solid fa-headset"></i></div><h3>Expert Support</h3><div class="count">We're always here</div></div>
+        <div class="cat-card"><div class="cat-icon"><i class="fa-solid fa-seedling"></i></div><h3>Wide Variety</h3><div class="count">100+ plant types</div></div>
+    </div>
+</div>
+{% endblock %}

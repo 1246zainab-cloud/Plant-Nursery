@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{% if banner %}Edit Banner{% else %}Add Banner{% endif %}{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>{% if banner %}Edit Banner{% else %}Add Banner{% endif %}</h2><span class="sub">Promotional banner</span></div>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Title</label>
+            <input type="text" name="title" class="form-control" value="{{ banner.title if banner else '' }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="2">{{ banner.description if banner else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>CTA Text</label>
+            <input type="text" name="cta_text" class="form-control" value="{{ banner.cta_text if banner else '' }}">
+        </div>
+        <div class="form-group">
+            <label>CTA Link</label>
+            <input type="text" name="cta_link" class="form-control" value="{{ banner.cta_link if banner else '' }}" placeholder="/plants">
+        </div>
+        <div class="form-group">
+            <label>Image</label>
+            {% if banner and banner.image %}<div style="margin-bottom:8px;"><img src="{{ banner.image }}" alt="" style="height:60px;border-radius:8px;"></div>{% endif %}
+            <input type="file" name="image" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="display_order" class="form-control" value="{{ banner.display_order if banner else 0 }}">
+        </div>
+        <div class="form-group">
+            <label class="checkbox"><input type="checkbox" name="is_active" {% if not banner or banner.is_active %}checked{% endif %}> Active</label>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+            <a href="{{ url_for('admin.banners') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

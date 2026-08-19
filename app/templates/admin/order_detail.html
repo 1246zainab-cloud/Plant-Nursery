@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Order Detail{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Order {{ order.order_number }}</h2><span class="sub">Placed {{ order.created_at|datetime }}</span></div>
+        <a href="{{ url_for('admin.orders') }}" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    </div>
+
+    <div class="detail-grid">
+        <div class="panel-sub">
+            <h3>Customer Information</h3>
+            <table class="info-table">
+                <tr><th>Name</th><td>{{ order.customer.full_name or order.customer.username }}</td></tr>
+                <tr><th>Email</th><td>{{ order.customer.email }}</td></tr>
+                <tr><th>Phone</th><td>{{ order.customer.phone or '—' }}</td></tr>
+                <tr><th>Address</th><td>{{ order.customer.address or '—' }}</td></tr>
+            </table>
+        </div>
+        <div class="panel-sub">
+            <h3>Order Summary</h3>
+            <table class="info-table">
+                <tr><th>Order #</th><td>{{ order.order_number }}</td></tr>
+                <tr><th>Date</th><td>{{ order.created_at|datetime }}</td></tr>
+                <tr><th>Items</th><td>{{ order.total_quantity }}</td></tr>
+                <tr><th>Total</th><td>{{ order.total|currency }}</td></tr>
+                <tr><th>Payment</th><td>{{ order.payment_method or '—' }}</td></tr>
+                <tr><th>Status</th><td><span class="badge-pill badge-{{ 'green' if order.status == 'Completed' else 'amber' if order.status in ['Processing','Ready','Confirmed'] else 'red' if order.status == 'Cancelled' else 'blue' }}">{{ order.status }}</span></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel-sub">
+        <h3>Order Items</h3>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Plant</th><th>Unit Price</th><th>Quantity</th><th>Line Total</th></tr></thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td><strong>{{ item.plant_name }}</strong></td>
+                        <td>{{ item.unit_price|currency }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.line_total|currency }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="total-row"><td colspan="3" style="text-align:right;"><strong>Total</strong></td><td><strong>{{ order.total|currency }}</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel-sub">
+        <h3>Update Status</h3>
+        <form method="post" action="{{ url_for('admin.order_status', order_id=order.id) }}" class="filter-bar">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <select name="status" class="form-control">
+                    {% for s in ["Pending","Confirmed","Processing","Ready","Completed","Cancelled"] %}
+                    <option value="{{ s }}" {% if order.status == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Update & Notify</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{% if section %}Edit Section{% else %}Add Section{% endif %}{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>{% if section %}Edit Homepage Section{% else %}Add Homepage Section{% endif %}</h2><span class="sub">Custom content block</span></div>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <label>Section Type</label>
+            <select name="section_type" class="form-control">
+                <option value="custom" {% if section and section.section_type == 'custom' %}selected{% endif %}>Custom</option>
+                <option value="feature" {% if section and section.section_type == 'feature' %}selected{% endif %}>Feature</option>
+                <option value="promo" {% if section and section.section_type == 'promo' %}selected{% endif %}>Promo</option>
+                <option value="info" {% if section and section.section_type == 'info' %}selected{% endif %}>Info</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="display_order" class="form-control" value="{{ section.display_order if section else 0 }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Title</label>
+            <input type="text" name="title" class="form-control" value="{{ section.title if section else '' }}">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="3">{{ section.description if section else '' }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Button Text</label>
+            <input type="text" name="button_text" class="form-control" value="{{ section.button_text if section else '' }}">
+        </div>
+        <div class="form-group">
+            <label>Button Link</label>
+            <input type="text" name="button_link" class="form-control" value="{{ section.button_link if section else '' }}" placeholder="/plants">
+        </div>
+        <div class="form-group">
+            <label>Image</label>
+            {% if section and section.image %}<div style="margin-bottom:8px;"><img src="{{ section.image }}" alt="" style="height:60px;border-radius:8px;"></div>{% endif %}
+            <input type="file" name="image" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label class="checkbox"><input type="checkbox" name="is_active" {% if not section or section.is_active %}checked{% endif %}> Active</label>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Save</button>
+            <a href="{{ url_for('admin.homepage_management') }}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

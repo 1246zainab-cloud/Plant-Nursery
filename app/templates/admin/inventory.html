@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Inventory{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-head">
+        <div><h2>Inventory Management</h2><span class="sub">Monitor and adjust plant stock</span></div>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>Plant</th><th>Category</th><th>Current Stock</th><th>Status</th><th>Adjust</th></tr></thead>
+            <tbody>
+                {% for p in plants %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td>{{ p.category.name if p.category else '—' }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>{% if p.stock <= 0 %}<span class="badge-pill badge-red">Out of Stock</span>{% elif p.stock <= 10 %}<span class="badge-pill badge-amber">Low</span>{% else %}<span class="badge-pill badge-green">Healthy</span>{% endif %}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('admin.inventory_adjust', plant_id=p.id) }}" style="display:flex;gap:6px;align-items:center;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="number" name="change" class="form-control" style="width:90px;" placeholder="±qty" required>
+                            <input type="text" name="reason" class="form-control" style="width:140px;" placeholder="Reason">
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px;">No plants in inventory.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% for pg in pagination.iter_pages() %}
+            {% if pg %}<a href="{{ url_for('admin.inventory', page=pg) }}" class="{% if pg == pagination.page %}current{% endif %}">{{ pg }}</a>
+            {% else %}<span>…</span>{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

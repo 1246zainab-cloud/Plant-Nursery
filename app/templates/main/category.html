@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>{{ category.name }}</h1>
+        <p>{{ category.description or 'Explore plants in this category.' }}</p>
+    </div>
+</div>
+
+<div class="container" style="margin-top:40px;">
+    <nav class="breadcrumbs">
+        <a href="{{ url_for('main.index') }}">Home</a><span>/</span>
+        <a href="{{ url_for('main.plants') }}">Plants</a><span>/</span>
+        {{ category.name }}
+    </nav>
+
+    {% if plants %}
+    <div class="plant-grid" style="margin-top:20px;">
+        {% for plant in plants %}
+        {% include 'main/_plant_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="fa-solid fa-leaf"></i><h3>No plants in this category yet</h3></div>
+    {% endif %}
+
+    {% if pagination.pages > 1 %}
+    <div class="pagination">
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                <a href="{{ url_for('main.category_detail', slug=category.slug, page=p) }}" class="{% if p == pagination.page %}current{% endif %}">{{ p }}</a>
+            {% else %}<span>…</span>{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
