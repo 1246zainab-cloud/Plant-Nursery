@@ -1,0 +1,6 @@
+[main d9c1c00] Deploy note: banner + plant image + CSRF fixes (verified on GitHub)
+ 2 files changed, 3 insertions(+)
+ create mode 100644 DEPLOY_NOTE.txt
+ create mode 100644 push_log.txt
+To https://github.com/1246zainab-cloud/Plant-Nursery.git
+   f8f28e5..d9c1c00  main -> main
