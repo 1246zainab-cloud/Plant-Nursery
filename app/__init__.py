@@ -33,9 +33,46 @@ def create_app(config_name="default"):
 
     with app.app_context():
         db.create_all()
+        _migrate_columns(app, db)
         _seed_initial_data(app)
 
     return app
+
+
+def _migrate_columns(app, db):
+    """Add any missing columns to existing tables (lightweight migration).
+
+    SQLAlchemy's create_all() only creates new tables, it does NOT add new
+    columns to tables that already exist. This helper keeps the schema in sync
+    with the models so the app does not crash on a missing column after a deploy.
+    """
+    from sqlalchemy import inspect as sa_inspect, text
+
+    inspector = sa_inspect(db.engine)
+    for model in db.Model.__subclasses__():
+        table = model.__tablename__
+        if not table or not inspector.has_table(table):
+            continue
+        existing = {c["name"] for c in inspector.get_columns(table)}
+        for col in model.__table__.columns:
+            if col.name in existing:
+                continue
+            col_type = col.type.compile(db.engine.dialect)
+            nullable = "NULL" if col.nullable else "NOT NULL"
+            default = ""
+            if col.default is not None and hasattr(col.default, "arg"):
+                default = " DEFAULT " + repr(col.default.arg)
+            elif col.server_default is not None:
+                default = " DEFAULT " + str(col.server_default.arg)
+            ddl = 'ALTER TABLE "{}" ADD COLUMN "{}" {} {}{}'.format(
+                table, col.name, col_type, nullable, default
+            )
+            try:
+                with db.engine.begin() as conn:
+                    conn.execute(text(ddl))
+                app.logger.info("Migrated column %s.%s", table, col.name)
+            except Exception as e:  # pragma: no cover - defensive
+                app.logger.warning("Could not add column %s.%s: %s", table, col.name, e)
 
 
 def _register_user_loader(app):
