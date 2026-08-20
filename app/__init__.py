@@ -116,6 +116,14 @@ def _register_context_processors(app):
             ).scalars().all()
         )
 
+        def page_banners(page_name):
+            """Return active banners assigned to the given page or to 'all'."""
+            result = []
+            for b in banners:
+                if b.page == page_name or b.page == "all":
+                    result.append(b)
+            return result
+
         # Cart (session based)
         cart = session.get("cart", {})
         cart_count = sum(item.get("quantity", 0) for item in cart.values())
@@ -178,6 +186,7 @@ def _register_context_processors(app):
             announcements=announcements,
             categories=categories,
             banners=banners,
+            page_banners=page_banners,
             cart_count=cart_count,
             notifications=notifications,
             unread_notifications=unread_notifications,

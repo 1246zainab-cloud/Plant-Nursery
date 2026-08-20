@@ -30,6 +30,25 @@
             <input type="file" name="image" class="form-control" accept="image/*">
         </div>
         <div class="form-group">
+            <label>Page</label>
+            <select name="page" class="form-control">
+                <option value="home" {% if not banner or banner.page == 'home' %}selected{% endif %}>Home</option>
+                <option value="plants" {% if banner and banner.page == 'plants' %}selected{% endif %}>Plants</option>
+                <option value="about" {% if banner and banner.page == 'about' %}selected{% endif %}>About Us</option>
+                <option value="contact" {% if banner and banner.page == 'contact' %}selected{% endif %}>Contact Us</option>
+                <option value="all" {% if banner and banner.page == 'all' %}selected{% endif %}>All Pages</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Animation</label>
+            <select name="animation" class="form-control">
+                <option value="none" {% if banner and banner.animation == 'none' %}selected{% endif %}>None</option>
+                <option value="fade" {% if banner and banner.animation == 'fade' %}selected{% endif %}>Fade</option>
+                <option value="slide" {% if not banner or banner.animation == 'slide' %}selected{% endif %}>Slide</option>
+                <option value="zoom" {% if banner and banner.animation == 'zoom' %}selected{% endif %}>Zoom</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label>Display Order</label>
             <input type="number" name="display_order" class="form-control" value="{{ banner.display_order if banner else 0 }}">
         </div>

@@ -66,6 +66,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// ---------- Banner slider (supports multiple sliders via id suffix) ----------
+function bannerSliderEl(suffix) {
+    return document.getElementById('bannerSlider' + (suffix || ''));
+}
+
+function bannerMove(dir, suffix) {
+    const slider = bannerSliderEl(suffix);
+    if (!slider) return;
+    const track = slider.querySelector('.banner-track');
+    const slides = slider.querySelectorAll('.banner-slide');
+    if (!track || slides.length < 2) return;
+    let idx = parseInt(slider.getAttribute('data-banner-index') || '0', 10);
+    idx = (idx + dir + slides.length) % slides.length;
+    slider.setAttribute('data-banner-index', idx);
+    track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    updateBannerDots(slider, idx);
+}
+
+function bannerGo(idx, suffix) {
+    const slider = bannerSliderEl(suffix);
+    if (!slider) return;
+    const track = slider.querySelector('.banner-track');
+    const slides = slider.querySelectorAll('.banner-slide');
+    if (!track || slides.length < 2) return;
+    slider.setAttribute('data-banner-index', idx);
+    track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    updateBannerDots(slider, idx);
+}
+
+function updateBannerDots(slider, idx) {
+    const dots = slider.querySelectorAll('.banner-dot');
+    dots.forEach(function (dot, i) {
+        dot.classList.toggle('active', i === idx);
+    });
+}
+
 function getCsrfToken() {
     const meta = document.querySelector('meta[name="csrf-token"]');
     return meta ? meta.getAttribute('content') : '';

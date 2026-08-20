@@ -346,6 +346,10 @@ class Banner(db.Model):
     image = db.Column(db.String(255), default="")
     cta_text = db.Column(db.String(80), default="")
     cta_link = db.Column(db.String(255), default="")
+    # Which page the banner appears on: home, plants, about, contact, all
+    page = db.Column(db.String(20), default="home")
+    # Animation style: none, fade, slide, zoom
+    animation = db.Column(db.String(20), default="slide")
     is_active = db.Column(db.Boolean, default=True)
     display_order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime(timezone=True), default=utcnow)

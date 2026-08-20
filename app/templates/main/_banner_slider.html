@@ -1,0 +1,24 @@
+{# Reusable banner slider — pass `banners` list and an `id_suffix` to keep multiple sliders unique #}
+{% if banners %}
+<section class="banner-slider banner-anim-{{ banners[0].animation if banners else 'slide' }}" id="bannerSlider{{ id_suffix|default('') }}">
+    <div class="banner-track">
+        {% for b in banners %}
+        <div class="banner-slide">
+            {% if b.image %}<img src="{{ b.image }}" alt="{{ b.title or '' }}" class="banner-img">{% endif %}
+            <div class="banner-overlay">
+                {% if b.title %}<h2 class="banner-title">{{ b.title }}</h2>{% endif %}
+                {% if b.description %}<p class="banner-desc">{{ b.description }}</p>{% endif %}
+                {% if b.cta_text %}<a href="{{ b.cta_link or '#' }}" class="btn btn-primary banner-cta">{{ b.cta_text }}</a>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if banners|length > 1 %}
+    <button class="banner-nav banner-prev" onclick="bannerMove(-1, '{{ id_suffix|default('') }}')" aria-label="Previous">&lsaquo;</button>
+    <button class="banner-nav banner-next" onclick="bannerMove(1, '{{ id_suffix|default('') }}')" aria-label="Next">&rsaquo;</button>
+    <div class="banner-dots">
+        {% for b in banners %}<span class="banner-dot {% if loop.first %}active{% endif %}" onclick="bannerGo({{ loop.index0 }}, '{{ id_suffix|default('') }}')"></span>{% endfor %}
+    </div>
+    {% endif %}
+</section>
+{% endif %}

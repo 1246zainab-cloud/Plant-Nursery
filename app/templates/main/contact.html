@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% with banners = page_banners('contact') %}
+{% include 'main/_banner_slider.html' %}
+{% endwith %}
+
 <div class="page-header">
     <div class="container">
         <h1>Contact Us</h1>

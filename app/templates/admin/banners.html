@@ -9,12 +9,14 @@
     </div>
     <div class="table-wrap">
         <table class="data-table">
-            <thead><tr><th>Image</th><th>Title</th><th>CTA</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Image</th><th>Title</th><th>Page</th><th>Animation</th><th>CTA</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>
                 {% for b in banners %}
                 <tr>
                     <td>{% if b.image %}<img src="{{ b.image }}" alt="" style="height:40px;border-radius:6px;">{% else %}<span class="sub">No image</span>{% endif %}</td>
                     <td><strong>{{ b.title }}</strong></td>
+                    <td>{{ b.page|capitalize }}</td>
+                    <td>{{ b.animation|capitalize }}</td>
                     <td>{{ b.cta_text or '—' }}</td>
                     <td>{{ b.display_order }}</td>
                     <td>{% if b.is_active %}<span class="badge-pill badge-green">Active</span>{% else %}<span class="badge-pill badge-red">Hidden</span>{% endif %}</td>
@@ -29,7 +31,7 @@
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px;">No banners.</td></tr>
+                <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px;">No banners.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

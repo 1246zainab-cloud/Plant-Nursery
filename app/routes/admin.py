@@ -901,6 +901,8 @@ def banner_new():
             image=image,
             cta_text=request.form.get("cta_text", ""),
             cta_link=request.form.get("cta_link", ""),
+            page=request.form.get("page", "home"),
+            animation=request.form.get("animation", "slide"),
             is_active=bool(request.form.get("is_active")),
             display_order=request.form.get("display_order", 0, type=int),
         )
@@ -922,6 +924,8 @@ def banner_edit(banner_id):
         b.description = request.form.get("description", "")
         b.cta_text = request.form.get("cta_text", "")
         b.cta_link = request.form.get("cta_link", "")
+        b.page = request.form.get("page", "home")
+        b.animation = request.form.get("animation", "slide")
         b.is_active = bool(request.form.get("is_active"))
         b.display_order = request.form.get("display_order", 0, type=int)
         if "image" in request.files and request.files["image"].filename:
